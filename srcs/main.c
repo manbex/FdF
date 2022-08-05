@@ -12,14 +12,42 @@
 
 #include "fdf.h"
 
-/*void	ft_print_list(t_point *list)
+void	ft_print_list(t_list *list)
 {
 	while (list)
 	{
-		printf("{%f, %f, %f} R=%d G=%d B=%d\n", list->x, list->y, list->z, list->r, list->g, list->b);
+		while (list->p)
+		{
+			printf("{%f, %f, %f} R=%d G=%d B=%d\n", list->p->x, list->p->y, list->p->z, list->p->r, list->p->g, list->p->b);
+			list->p = list->p->next;
+		}
 		list = list->next;
 	}
-}*/
+}
+
+int	draw(t_vars *v)
+{
+	
+}
+
+void	init_param(t_vars *v)
+{
+	v->x_angle = 0.95;
+	v->y_angle = 0;
+	v->z_angle = 0.785398;
+	v->zoom = 1;
+	v->length = 100;
+}
+
+int	input_manager(int keycode, t_vars *v)
+{
+	if (keycode == 65307)
+	{
+		mlx_destroy_window(v->mlx, v->win);
+		exit(0);
+	}
+	return (0);
+}	
 
 int	main(int argc, char **argv)
 {
@@ -32,9 +60,17 @@ int	main(int argc, char **argv)
 	{
 		if (init(argv[1], &v))
 			return (write(2, "Error\n", 6), 1);
+		init_param(&v);
+		v.mlx = mlx_init();
+		v.win = mlx_new_window(v.mlx, 1920, 1080, "fdf");
+		v.d.img = mlx_new_image(v.mlx, 1920, 1080);
+		v.d.addr = mlx_get_data_addr(v.d.img, &v.d.bpp, &v.d.length, &v.d.endian);
+		mlx_put_image_to_window(v.mlx, v.win, v.d.img, 0, 0);
+		mlx_hook(v.win, 2, 1L<<0, input_manager, &v);
 		/*printf("x_angle = %f\ny_angle = %f\nz_angle = %f\n", v.x_angle, v.y_angle, v.z_angle);
-		printf("x_max = %d\ny_max = %d\nz_max = %d\n\n", v.x_max, v.y_max, v.z_max);
-		ft_print_list(v.p);*/
+		printf("x_max = %d\ny_max = %d\nz_max = %d\n\n", v.x_max, v.y_max, v.z_max);*/
+		//ft_print_list(v.p);
+		mlx_loop(v.mlx);
 		return (0);
 	}
 	return (write(2, "Error\n", 6), 1);

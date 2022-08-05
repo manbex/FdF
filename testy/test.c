@@ -174,7 +174,7 @@ void	grid(t_dat *img)
 
 int	main()
 {
-	t_var	vars;
+	t_var	vars
 	t_dat	img;
 	
 	vars.mlx = mlx_init();

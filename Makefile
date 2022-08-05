@@ -2,7 +2,7 @@ NAME = fdf
 
 SRC_DIR=srcs/
 
-SRC = main.c init.c utils.c get_next_line.c get_next_line_utils.c ft_split.c ft_atoi.c
+SRC = main.c init.c utils.c get_next_line.c get_next_line_utils.c ft_split.c ft_atoi.c line.c rotation.c
 TEST = test.c
 
 OBJ = $(addprefix $(SRC_DIR), $(SRC:.c=.o))
