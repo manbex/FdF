@@ -40,6 +40,8 @@ typedef struct s_point
 	double			px;
 	double			py;
 	double			pz;
+	int				i;
+	int				j;
 	int				r;
 	int				g;
 	int				b;
@@ -83,5 +85,8 @@ int		get_next_line(int fd, char **str);
 int		init(char *file, t_vars *v);
 void	plot_line(t_data *d, int x0, int y0, int x1, int y1);
 void	ft_lstadd_back1(t_list **lst, t_list *new);
+void	rotation_x(t_point *p, double a);
+void	rotation_y(t_point *p, double a);
+void	rotation_z(t_point *p, double a);
 
 #endif

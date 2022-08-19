@@ -10,8 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
-#include <stdio.h>
+# include "mlx.h"
+# include <stdlib.h>
+# include <unistd.h>
+# include <string.h>
+# include <fcntl.h>
+#include <math.h>
+# include <stdio.h>
 
 typedef struct s_dat
 {
@@ -31,7 +36,7 @@ typedef struct	s_var
 	int	y;
 }	t_var;
 
-void	my_mlx_pixel_put(t_dat *data, int x, int y, int color)
+static void	my_mlx_pixel_put(t_dat *data, int x, int y, int color)
 {
 	char	*dst;
 
@@ -39,7 +44,7 @@ void	my_mlx_pixel_put(t_dat *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-void	plot_line(t_dat *data, int x0, int y0, int x1, int y1)
+static void	plot_line(t_dat *data, int x0, int y0, int x1, int y1)
 {
 	int dx =  abs (x1 - x0), sx = x0 < x1 ? 1 : -1;
 	int dy = -abs (y1 - y0), sy = y0 < y1 ? 1 : -1; 
@@ -107,7 +112,6 @@ void	rotation_z(double *px, double *py, double *pz)
 	double	x = *px;
 	double	y = *py;
 	double	z = *pz;
-
 	*px = (x * cos(a)) - (y * sin(a));
 	*py = (x * sin(a)) + (y * cos(a));
 	*pz = z;
@@ -133,15 +137,17 @@ void	grid(t_dat *img)
 	double	p[2][3] = {{100, 0, 0}, {0, 100, 0}};
 	int	i = 300;
 
+	rotation_x(&a[0], &a[1], &a[2]);
+	rotation_x(&b[0], &b[1], &b[2]);
+	rotation_x(&c[0], &c[1], &c[2]);
+	rotation_x(&d[0], &d[1], &d[2]);
+
 	rotation_z(&a[0], &a[1], &a[2]);
 	rotation_z(&b[0], &b[1], &b[2]);
 	rotation_z(&c[0], &c[1], &c[2]);
 	rotation_z(&d[0], &d[1], &d[2]);
 
-	rotation_x(&a[0], &a[1], &a[2]);
-	rotation_x(&b[0], &b[1], &b[2]);
-	rotation_x(&c[0], &c[1], &c[2]);
-	rotation_x(&d[0], &d[1], &d[2]);
+	
 	
 	rotation_y(&a[0], &a[1], &a[2]);
 	rotation_y(&b[0], &b[1], &b[2]);
@@ -174,7 +180,7 @@ void	grid(t_dat *img)
 
 int	main()
 {
-	t_var	vars
+	t_var	vars;
 	t_dat	img;
 	
 	vars.mlx = mlx_init();

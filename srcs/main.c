@@ -25,9 +25,55 @@ void	ft_print_list(t_list *list)
 	}
 }
 
-int	draw(t_vars *v)
+void	calc_point(t_vars *v, t_point *p)
 {
+	p->px = p->x;
+	p->py = p->y;
+	p->pz = p->z / 5;
+	rotation_z(p, v->z_angle);
+	rotation_x(p, v->x_angle);
+	rotation_y(p, v->y_angle);
 	
+	p->i = (p->px * v->length) + v->x_off;
+	p->j = (p->py * v->length) + v->y_off;
+}
+
+void	draw(t_vars *v)
+{
+	t_list	*lst;
+	t_point	*tmp;
+	t_point *tmp2;
+
+	v->x_off = 500;
+	v->y_off = 500;
+	lst = v->p;
+
+	while (lst)
+	{
+		tmp = lst->p;
+		if (lst->next)
+			tmp2 = lst->next->p;
+		else
+			tmp2 = NULL;
+		while (tmp)
+		{
+			if (tmp == v->p->p)
+				calc_point(v, tmp);
+			if (tmp->next)
+			{
+				calc_point(v, tmp->next);
+				plot_line(&(v->d), tmp->i, tmp->j, tmp->next->i, tmp->next->j);
+			}
+			if (tmp2)
+			{
+				calc_point(v, tmp2);
+				plot_line(&(v->d), tmp->i, tmp->j, tmp2->i, tmp2->j);
+				tmp2 = tmp2->next;
+			}
+			tmp = tmp->next;
+		}
+		lst = lst->next;
+	}
 }
 
 void	init_param(t_vars *v)
@@ -36,7 +82,7 @@ void	init_param(t_vars *v)
 	v->y_angle = 0;
 	v->z_angle = 0.785398;
 	v->zoom = 1;
-	v->length = 100;
+	v->length = 10;
 }
 
 int	input_manager(int keycode, t_vars *v)
@@ -47,7 +93,7 @@ int	input_manager(int keycode, t_vars *v)
 		exit(0);
 	}
 	return (0);
-}	
+}
 
 int	main(int argc, char **argv)
 {
@@ -65,6 +111,7 @@ int	main(int argc, char **argv)
 		v.win = mlx_new_window(v.mlx, 1920, 1080, "fdf");
 		v.d.img = mlx_new_image(v.mlx, 1920, 1080);
 		v.d.addr = mlx_get_data_addr(v.d.img, &v.d.bpp, &v.d.length, &v.d.endian);
+		draw(&v);
 		mlx_put_image_to_window(v.mlx, v.win, v.d.img, 0, 0);
 		mlx_hook(v.win, 2, 1L<<0, input_manager, &v);
 		/*printf("x_angle = %f\ny_angle = %f\nz_angle = %f\n", v.x_angle, v.y_angle, v.z_angle);
