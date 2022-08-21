@@ -45,6 +45,7 @@ typedef struct s_point
 	int				r;
 	int				g;
 	int				b;
+	int				show;
 	struct s_point *next;
 }	t_point;
 

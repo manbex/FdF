@@ -12,19 +12,6 @@
 
 #include "fdf.h"
 
-void	ft_print_list(t_list *list)
-{
-	while (list)
-	{
-		while (list->p)
-		{
-			printf("{%f, %f, %f} R=%d G=%d B=%d\n", list->p->x, list->p->y, list->p->z, list->p->r, list->p->g, list->p->b);
-			list->p = list->p->next;
-		}
-		list = list->next;
-	}
-}
-
 void	calc_point(t_vars *v, t_point *p)
 {
 	p->px = p->x;
@@ -43,11 +30,8 @@ void	draw(t_vars *v)
 	t_list	*lst;
 	t_point	*tmp;
 	t_point *tmp2;
-
-	v->x_off = 500;
-	v->y_off = 500;
+	
 	lst = v->p;
-
 	while (lst)
 	{
 		tmp = lst->p;
@@ -82,16 +66,51 @@ void	init_param(t_vars *v)
 	v->y_angle = 0;
 	v->z_angle = 0.785398;
 	v->zoom = 1;
-	v->length = 10;
+	v->length = 3;
+	v->x_off = 1000;
+	v->y_off = 200;
 }
 
 int	input_manager(int keycode, t_vars *v)
 {
 	if (keycode == 65307)
 	{
+		mlx_destroy_image(v->mlx, v->d.img);
 		mlx_destroy_window(v->mlx, v->win);
+		mlx_loop_end(v->mlx);
+		mlx_destroy_display(v->mlx);
+		free(v->mlx);
+		ft_lstfree(v->p);
 		exit(0);
 	}
+	if (keycode == 119)
+		v->y_off -= 10;
+	if (keycode == 115)
+		v->y_off += 10;
+	if (keycode == 97)
+		v->x_off -= 10;
+	if (keycode == 100)
+		v->x_off += 10;
+	if (keycode == 114)
+		v->x_angle -= 0.1;
+	if (keycode == 116)
+		v->x_angle += 0.1;
+	if (keycode == 102)
+		v->y_angle -= 0.1;
+	if (keycode == 103)
+		v->y_angle += 0.1;
+	if (keycode == 118)
+		v->z_angle -= 0.1;
+	if (keycode == 98)
+		v->z_angle += 0.1;
+	if (keycode == 105)
+		init_param(v);
+	printf("%d\n", keycode);
+	mlx_destroy_image(v->mlx, v->d.img);
+	v->d.img = mlx_new_image(v->mlx, 1920, 1080);
+	v->d.addr = mlx_get_data_addr(v->d.img, &v->d.bpp, &v->d.length, &v->d.endian);
+	mlx_put_image_to_window(v->mlx, v->win, v->d.img, 0, 0);
+	draw(v);
 	return (0);
 }
 
@@ -114,9 +133,6 @@ int	main(int argc, char **argv)
 		draw(&v);
 		mlx_put_image_to_window(v.mlx, v.win, v.d.img, 0, 0);
 		mlx_hook(v.win, 2, 1L<<0, input_manager, &v);
-		/*printf("x_angle = %f\ny_angle = %f\nz_angle = %f\n", v.x_angle, v.y_angle, v.z_angle);
-		printf("x_max = %d\ny_max = %d\nz_max = %d\n\n", v.x_max, v.y_max, v.z_max);*/
-		//ft_print_list(v.p);
 		mlx_loop(v.mlx);
 		return (0);
 	}
