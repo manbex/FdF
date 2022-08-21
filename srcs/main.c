@@ -16,13 +16,12 @@ void	calc_point(t_vars *v, t_point *p)
 {
 	p->px = p->x;
 	p->py = p->y;
-	p->pz = p->z / 5;
+	p->pz = p->z * v->z_size;
 	rotation_z(p, v->z_angle);
 	rotation_x(p, v->x_angle);
 	rotation_y(p, v->y_angle);
-	
-	p->i = (p->px * v->length) + v->x_off;
-	p->j = (p->py * v->length) + v->y_off;
+	p->i = (p->px * v->length * v->zoom) + v->x_off;
+	p->j = (p->py * v->length * v->zoom) + v->y_off;
 }
 
 void	draw(t_vars *v)
@@ -32,6 +31,7 @@ void	draw(t_vars *v)
 	t_point *tmp2;
 	
 	lst = v->p;
+	
 	while (lst)
 	{
 		tmp = lst->p;
@@ -58,6 +58,8 @@ void	draw(t_vars *v)
 		}
 		lst = lst->next;
 	}
+	mlx_put_image_to_window(v->mlx, v->win, v->d.img, 0, 0);
+	mlx_string_put(v->mlx, v->win, 20, 30, 0xFFFFFF, "Ceci est un test");
 }
 
 void	init_param(t_vars *v)
@@ -69,6 +71,7 @@ void	init_param(t_vars *v)
 	v->length = 3;
 	v->x_off = 1000;
 	v->y_off = 200;
+	v->z_size = 0.2;
 }
 
 int	input_manager(int keycode, t_vars *v)
@@ -83,14 +86,14 @@ int	input_manager(int keycode, t_vars *v)
 		ft_lstfree(v->p);
 		exit(0);
 	}
-	if (keycode == 119)
-		v->y_off -= 10;
-	if (keycode == 115)
-		v->y_off += 10;
-	if (keycode == 97)
-		v->x_off -= 10;
-	if (keycode == 100)
-		v->x_off += 10;
+	if (keycode == 115 || keycode == 65364)
+		v->y_off -= 15;
+	if (keycode == 119 || keycode == 65362)
+		v->y_off += 15;
+	if (keycode == 100 || keycode == 65363)
+		v->x_off -= 15;
+	if (keycode == 97 || keycode == 65361)
+		v->x_off += 15;
 	if (keycode == 114)
 		v->x_angle -= 0.1;
 	if (keycode == 116)
@@ -103,13 +106,19 @@ int	input_manager(int keycode, t_vars *v)
 		v->z_angle -= 0.1;
 	if (keycode == 98)
 		v->z_angle += 0.1;
+	if (keycode == 117)
+		v->z_size -= 0.1;
 	if (keycode == 105)
+		v->z_size += 0.1;
+	if (keycode == 122 || keycode == 65453)
+		v->zoom *= 0.9;
+	if (keycode == 120 || keycode == 65451)
+		v->zoom *= 1.1;
+	if (keycode == 65289)
 		init_param(v);
-	printf("%d\n", keycode);
 	mlx_destroy_image(v->mlx, v->d.img);
 	v->d.img = mlx_new_image(v->mlx, 1920, 1080);
 	v->d.addr = mlx_get_data_addr(v->d.img, &v->d.bpp, &v->d.length, &v->d.endian);
-	mlx_put_image_to_window(v->mlx, v->win, v->d.img, 0, 0);
 	draw(v);
 	return (0);
 }
@@ -131,7 +140,6 @@ int	main(int argc, char **argv)
 		v.d.img = mlx_new_image(v.mlx, 1920, 1080);
 		v.d.addr = mlx_get_data_addr(v.d.img, &v.d.bpp, &v.d.length, &v.d.endian);
 		draw(&v);
-		mlx_put_image_to_window(v.mlx, v.win, v.d.img, 0, 0);
 		mlx_hook(v.win, 2, 1L<<0, input_manager, &v);
 		mlx_loop(v.mlx);
 		return (0);

@@ -70,6 +70,7 @@ typedef struct s_vars
 	int		y_max;
 	int		z_max;
 	int		length;
+	double	z_size;
 	double	zoom;
 }	t_vars;
 
