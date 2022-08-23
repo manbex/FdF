@@ -14,8 +14,8 @@
 
 void	calc_point(t_vars *v, t_point *p)
 {
-	p->px = p->x;
-	p->py = p->y;
+	p->px = p->x - ((double)v->x_max / 2);
+	p->py = p->y - ((double)v->y_max / 2);
 	p->pz = p->z * v->z_size;
 	rotation_z(p, v->z_angle);
 	rotation_x(p, v->x_angle);
@@ -46,18 +46,27 @@ void	draw(t_vars *v)
 			if (tmp->next)
 			{
 				calc_point(v, tmp->next);
-				plot_line(&(v->d), tmp->i, tmp->j, tmp->next->i, tmp->next->j);
+				if (!(tmp->i < 0 && tmp->next->i < 0)
+					&& !(tmp->j < 0 && tmp->next->j < 0)
+					&& !(tmp->i > 1920 && tmp->next->i > 1920)
+					&& !(tmp->j > 1080 && tmp->next->j > 1080))
+					plot_line(&(v->d), tmp->i, tmp->j, tmp->next->i, tmp->next->j);
 			}
 			if (tmp2)
 			{
 				calc_point(v, tmp2);
-				plot_line(&(v->d), tmp->i, tmp->j, tmp2->i, tmp2->j);
+				if (!(tmp->i < 0 && tmp2->i < 0)
+					&& !(tmp->j < 0 && tmp2->j < 0)
+					&& !(tmp->i > 1920 && tmp2->i > 1920)
+					&& !(tmp->j > 1080 && tmp2->j > 1080))
+					plot_line(&(v->d), tmp->i, tmp->j, tmp2->i, tmp2->j);
 				tmp2 = tmp2->next;
 			}
 			tmp = tmp->next;
 		}
 		lst = lst->next;
 	}
+	my_mlx_pixel_put(&(v->d), 960, 540, 0xffffff);
 	mlx_put_image_to_window(v->mlx, v->win, v->d.img, 0, 0);
 	mlx_string_put(v->mlx, v->win, 20, 30, 0xFFFFFF, "Ceci est un test");
 }
@@ -68,9 +77,9 @@ void	init_param(t_vars *v)
 	v->y_angle = 0;
 	v->z_angle = 0.785398;
 	v->zoom = 1;
-	v->length = 3;
-	v->x_off = 1000;
-	v->y_off = 200;
+	v->length = 30;
+	v->x_off = 960;
+	v->y_off = 540;
 	v->z_size = 0.2;
 }
 
@@ -111,9 +120,18 @@ int	input_manager(int keycode, t_vars *v)
 	if (keycode == 105)
 		v->z_size += 0.1;
 	if (keycode == 122 || keycode == 65453)
+	{
 		v->zoom *= 0.9;
+		v->x_off = 960 - ((960 - v->x_off) * 0.9);
+		v->y_off = 540 - ((540 - v->y_off) * 0.9);
+	}
 	if (keycode == 120 || keycode == 65451)
+	{
 		v->zoom *= 1.1;
+		v->x_off = 960 - ((960 - v->x_off) * 1.1);
+		v->y_off = 540 - ((540 - v->y_off) * 1.1);
+		
+	}
 	if (keycode == 65289)
 		init_param(v);
 	mlx_destroy_image(v->mlx, v->d.img);

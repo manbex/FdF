@@ -17,7 +17,7 @@ void	plot_line(t_data *data, int x0, int y0, int x1, int y1)
 
 	for (;;)
 	{
-		if (x0 > 0 && x0 < 1920 && y0 > 0 && y0 < 1080)
+		if (x0 >= 0 && x0 <= 1920 && y0 >= 0 && y0 <= 1080)
 			my_mlx_pixel_put(data, x0, y0, 0xFF00FF);
 		if (x0 == x1 && y0 == y1) break;
 		e2 = 2 * err;

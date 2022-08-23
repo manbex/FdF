@@ -50,9 +50,9 @@ int	parse_line(t_point *new, char *str)
 		str++;
 	if (!*str)
 	{
-		new->r = 0;
-		new->g = 0;
-		new->b = 0;
+		new->r = 0xff;
+		new->g = 0xff;
+		new->b = 0xff;
 		return (0);
 	}
 	if (str[0] == ',' && str[1] == '0' && (str[2] == 'x' || str[2] == 'X'))

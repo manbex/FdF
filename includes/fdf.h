@@ -77,6 +77,7 @@ typedef struct s_vars
 int		ft_strlen(char	*s);
 void	ft_lstfree(t_list *lst);
 void	ft_lstadd_back(t_point **lst, t_point *new);
+void	ft_lstadd_back1(t_list **lst, t_list *new);
 char	*ft_free(char *str);
 void	ft_free_tab(char **tab);
 char	**ft_split(char const *s, char c);
@@ -86,7 +87,7 @@ char	*ft_strjoin(char *s1, char *s2);
 int		get_next_line(int fd, char **str);
 int		init(char *file, t_vars *v);
 void	plot_line(t_data *d, int x0, int y0, int x1, int y1);
-void	ft_lstadd_back1(t_list **lst, t_list *new);
+void	my_mlx_pixel_put(t_data *d, int x, int y, int color);
 void	rotation_x(t_point *p, double a);
 void	rotation_y(t_point *p, double a);
 void	rotation_z(t_point *p, double a);
