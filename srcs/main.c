@@ -48,8 +48,8 @@ void	draw(t_vars *v)
 				calc_point(v, tmp->next);
 				if (!(tmp->i < 0 && tmp->next->i < 0)
 					&& !(tmp->j < 0 && tmp->next->j < 0)
-					&& !(tmp->i > 1920 && tmp->next->i > 1920)
-					&& !(tmp->j > 1080 && tmp->next->j > 1080))
+					&& !(tmp->i > WIN_X && tmp->next->i > WIN_X)
+					&& !(tmp->j > WIN_Y && tmp->next->j > WIN_Y))
 					plot_line(&(v->d), tmp->i, tmp->j, tmp->next->i, tmp->next->j);
 			}
 			if (tmp2)
@@ -57,8 +57,8 @@ void	draw(t_vars *v)
 				calc_point(v, tmp2);
 				if (!(tmp->i < 0 && tmp2->i < 0)
 					&& !(tmp->j < 0 && tmp2->j < 0)
-					&& !(tmp->i > 1920 && tmp2->i > 1920)
-					&& !(tmp->j > 1080 && tmp2->j > 1080))
+					&& !(tmp->i > WIN_X && tmp2->i > WIN_X)
+					&& !(tmp->j > WIN_Y && tmp2->j > WIN_Y))
 					plot_line(&(v->d), tmp->i, tmp->j, tmp2->i, tmp2->j);
 				tmp2 = tmp2->next;
 			}
@@ -66,7 +66,6 @@ void	draw(t_vars *v)
 		}
 		lst = lst->next;
 	}
-	my_mlx_pixel_put(&(v->d), 960, 540, 0xffffff);
 	mlx_put_image_to_window(v->mlx, v->win, v->d.img, 0, 0);
 	mlx_string_put(v->mlx, v->win, 20, 30, 0xFFFFFF, "Ceci est un test");
 }
@@ -78,8 +77,8 @@ void	init_param(t_vars *v)
 	v->z_angle = 0.785398;
 	v->zoom = 1;
 	v->length = 30;
-	v->x_off = 960;
-	v->y_off = 540;
+	v->x_off = WIN_X / 2;
+	v->y_off = WIN_Y / 2;
 	v->z_size = 0.2;
 }
 
@@ -96,46 +95,46 @@ int	input_manager(int keycode, t_vars *v)
 		exit(0);
 	}
 	if (keycode == 115 || keycode == 65364)
-		v->y_off -= 15;
+		v->y_off -= TRANS;
 	if (keycode == 119 || keycode == 65362)
-		v->y_off += 15;
+		v->y_off += TRANS;
 	if (keycode == 100 || keycode == 65363)
-		v->x_off -= 15;
+		v->x_off -= TRANS;
 	if (keycode == 97 || keycode == 65361)
-		v->x_off += 15;
+		v->x_off += TRANS;
 	if (keycode == 114)
-		v->x_angle -= 0.1;
+		v->x_angle -= ANGLE;
 	if (keycode == 116)
-		v->x_angle += 0.1;
+		v->x_angle += ANGLE;
 	if (keycode == 102)
-		v->y_angle -= 0.1;
+		v->y_angle -= ANGLE;
 	if (keycode == 103)
-		v->y_angle += 0.1;
+		v->y_angle += ANGLE;
 	if (keycode == 118)
-		v->z_angle -= 0.1;
+		v->z_angle -= ANGLE;
 	if (keycode == 98)
-		v->z_angle += 0.1;
+		v->z_angle += ANGLE;
 	if (keycode == 117)
-		v->z_size -= 0.1;
+		v->z_size -= ANGLE;
 	if (keycode == 105)
-		v->z_size += 0.1;
+		v->z_size += ANGLE;
 	if (keycode == 122 || keycode == 65453)
 	{
-		v->zoom *= 0.9;
-		v->x_off = 960 - ((960 - v->x_off) * 0.9);
-		v->y_off = 540 - ((540 - v->y_off) * 0.9);
+		v->zoom /= ZOOM;
+		v->x_off = (WIN_X / 2) - ((960 - v->x_off) / ZOOM);
+		v->y_off = (WIN_Y / 2) - ((540 - v->y_off) / ZOOM);
 	}
 	if (keycode == 120 || keycode == 65451)
 	{
-		v->zoom *= 1.1;
-		v->x_off = 960 - ((960 - v->x_off) * 1.1);
-		v->y_off = 540 - ((540 - v->y_off) * 1.1);
+		v->zoom *= ZOOM;
+		v->x_off = 960 - ((960 - v->x_off) * ZOOM);
+		v->y_off = 540 - ((540 - v->y_off) * ZOOM);
 		
 	}
 	if (keycode == 65289)
 		init_param(v);
 	mlx_destroy_image(v->mlx, v->d.img);
-	v->d.img = mlx_new_image(v->mlx, 1920, 1080);
+	v->d.img = mlx_new_image(v->mlx, WIN_X, WIN_Y);
 	v->d.addr = mlx_get_data_addr(v->d.img, &v->d.bpp, &v->d.length, &v->d.endian);
 	draw(v);
 	return (0);
@@ -154,8 +153,8 @@ int	main(int argc, char **argv)
 			return (write(2, "Error\n", 6), 1);
 		init_param(&v);
 		v.mlx = mlx_init();
-		v.win = mlx_new_window(v.mlx, 1920, 1080, "fdf");
-		v.d.img = mlx_new_image(v.mlx, 1920, 1080);
+		v.win = mlx_new_window(v.mlx, WIN_X, WIN_Y, "fdf");
+		v.d.img = mlx_new_image(v.mlx, WIN_X, WIN_Y);
 		v.d.addr = mlx_get_data_addr(v.d.img, &v.d.bpp, &v.d.length, &v.d.endian);
 		draw(&v);
 		mlx_hook(v.win, 2, 1L<<0, input_manager, &v);

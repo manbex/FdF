@@ -13,6 +13,11 @@
 #ifndef FDF_H
 # define FDF_H
 # define BUFFER_SIZE 4092
+# define ZOOM 1.1
+# define ANGLE 0.10472
+# define WIN_X 1920
+# define WIN_Y 1080
+# define TRANS 20
 
 # include "mlx.h"
 # include <stdlib.h>
