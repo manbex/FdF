@@ -50,7 +50,7 @@ void	draw(t_vars *v)
 					&& !(tmp->j < 0 && tmp->next->j < 0)
 					&& !(tmp->i > WIN_X && tmp->next->i > WIN_X)
 					&& !(tmp->j > WIN_Y && tmp->next->j > WIN_Y))
-					plot_line(&(v->d), tmp->i, tmp->j, tmp->next->i, tmp->next->j);
+					plot_line(&v->d, tmp->i, tmp->j, tmp->next->i, tmp->next->j);
 			}
 			if (tmp2)
 			{
@@ -59,7 +59,7 @@ void	draw(t_vars *v)
 					&& !(tmp->j < 0 && tmp2->j < 0)
 					&& !(tmp->i > WIN_X && tmp2->i > WIN_X)
 					&& !(tmp->j > WIN_Y && tmp2->j > WIN_Y))
-					plot_line(&(v->d), tmp->i, tmp->j, tmp2->i, tmp2->j);
+					plot_line(&v->d, tmp->i, tmp->j, tmp2->i, tmp2->j);
 				tmp2 = tmp2->next;
 			}
 			tmp = tmp->next;
@@ -76,7 +76,7 @@ void	init_param(t_vars *v)
 	v->y_angle = 0;
 	v->z_angle = 0.785398;
 	v->zoom = 1;
-	v->length = 30;
+	v->length = 1870 / ((v->x_max + v->y_max) * cos(0.785398));
 	v->x_off = WIN_X / 2;
 	v->y_off = WIN_Y / 2;
 	v->z_size = 0.2;
@@ -94,44 +94,44 @@ int	input_manager(int keycode, t_vars *v)
 		ft_lstfree(v->p);
 		exit(0);
 	}
-	if (keycode == 115 || keycode == 65364)
+	else if (keycode == 115 || keycode == 65364)
 		v->y_off -= TRANS;
-	if (keycode == 119 || keycode == 65362)
+	else if (keycode == 119 || keycode == 65362)
 		v->y_off += TRANS;
-	if (keycode == 100 || keycode == 65363)
+	else if (keycode == 100 || keycode == 65363)
 		v->x_off -= TRANS;
-	if (keycode == 97 || keycode == 65361)
+	else if (keycode == 97 || keycode == 65361)
 		v->x_off += TRANS;
-	if (keycode == 114)
+	else if (keycode == 114)
 		v->x_angle -= ANGLE;
-	if (keycode == 116)
+	else if (keycode == 116)
 		v->x_angle += ANGLE;
-	if (keycode == 102)
+	else if (keycode == 102)
 		v->y_angle -= ANGLE;
-	if (keycode == 103)
+	else if (keycode == 103)
 		v->y_angle += ANGLE;
-	if (keycode == 118)
+	else if (keycode == 118)
 		v->z_angle -= ANGLE;
-	if (keycode == 98)
+	else if (keycode == 98)
 		v->z_angle += ANGLE;
-	if (keycode == 117)
-		v->z_size -= ANGLE;
-	if (keycode == 105)
-		v->z_size += ANGLE;
-	if (keycode == 122 || keycode == 65453)
+	else if (keycode == 117)
+		v->z_size -= 0.1;
+	else if (keycode == 105)
+		v->z_size += 0.1;
+	else if (keycode == 122 || keycode == 65453)
 	{
 		v->zoom /= ZOOM;
 		v->x_off = (WIN_X / 2) - ((960 - v->x_off) / ZOOM);
 		v->y_off = (WIN_Y / 2) - ((540 - v->y_off) / ZOOM);
 	}
-	if (keycode == 120 || keycode == 65451)
+	else if (keycode == 120 || keycode == 65451)
 	{
 		v->zoom *= ZOOM;
 		v->x_off = 960 - ((960 - v->x_off) * ZOOM);
 		v->y_off = 540 - ((540 - v->y_off) * ZOOM);
 		
 	}
-	if (keycode == 65289)
+	else if (keycode == 65289)
 		init_param(v);
 	mlx_destroy_image(v->mlx, v->d.img);
 	v->d.img = mlx_new_image(v->mlx, WIN_X, WIN_Y);
@@ -153,6 +153,8 @@ int	main(int argc, char **argv)
 			return (write(2, "Error\n", 6), 1);
 		init_param(&v);
 		v.mlx = mlx_init();
+		if (!v.mlx)
+			return (write(2, "Error\n", 6), 1);
 		v.win = mlx_new_window(v.mlx, WIN_X, WIN_Y, "fdf");
 		v.d.img = mlx_new_image(v.mlx, WIN_X, WIN_Y);
 		v.d.addr = mlx_get_data_addr(v.d.img, &v.d.bpp, &v.d.length, &v.d.endian);
