@@ -37,6 +37,7 @@ static int	get_color(t_line l, t_point *p1, t_point *p2)
 	int	r;
 	int	g;
 	int	b;
+
 	if (l.size != 0)
 	{
 		r = p1->r + ((((l.i * 100) / l.size) * (p2->r - p1->r)) / 100);

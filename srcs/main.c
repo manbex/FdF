@@ -67,7 +67,7 @@ void	draw(t_vars *v)
 		lst = lst->next;
 	}
 	mlx_put_image_to_window(v->mlx, v->win, v->d.img, 0, 0);
-	mlx_string_put(v->mlx, v->win, 20, 30, 0xFFFFFF, "Ceci est un test");
+	mlx_string_put(v->mlx, v->win, 20, 30, 0xFFFFFF, "Coucou c'est FdF !");
 }
 
 void	init_param(t_vars *v)

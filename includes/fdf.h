@@ -73,7 +73,6 @@ typedef struct s_vars
 	int		y_off;
 	int		x_max;
 	int		y_max;
-	int		z_max;
 	int		length;
 	double	z_size;
 	double	zoom;
@@ -106,6 +105,7 @@ int		ft_atoi_hex(char c1, char c2);
 char	*ft_strjoin(char *s1, char *s2);
 int		get_next_line(int fd, char **str);
 int		init(char *file, t_vars *v);
+int		parse_line(t_point *new, char *str);
 void	plot_line(t_data *data, t_point *p1, t_point *p2);
 void	my_mlx_pixel_put(t_data *d, int x, int y, int color);
 void	rotation_x(t_point *p, double a);
