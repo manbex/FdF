@@ -79,6 +79,21 @@ typedef struct s_vars
 	double	zoom;
 }	t_vars;
 
+typedef struct s_line
+{
+	int	x;
+	int	y;
+	int	dx;
+	int	dy;
+	int	sx;
+	int	sy;
+	int	err;
+	int	e2;
+	int	i;
+	int	size;
+
+}	t_line;
+
 int		ft_strlen(char	*s);
 void	ft_lstfree(t_list *lst);
 void	ft_lstadd_back(t_point **lst, t_point *new);
@@ -91,7 +106,7 @@ int		ft_atoi_hex(char c1, char c2);
 char	*ft_strjoin(char *s1, char *s2);
 int		get_next_line(int fd, char **str);
 int		init(char *file, t_vars *v);
-void	plot_line(t_data *d, int x0, int y0, int x1, int y1);
+void	plot_line(t_data *data, t_point *p1, t_point *p2);
 void	my_mlx_pixel_put(t_data *d, int x, int y, int color);
 void	rotation_x(t_point *p, double a);
 void	rotation_y(t_point *p, double a);

@@ -50,7 +50,7 @@ void	draw(t_vars *v)
 					&& !(tmp->j < 0 && tmp->next->j < 0)
 					&& !(tmp->i > WIN_X && tmp->next->i > WIN_X)
 					&& !(tmp->j > WIN_Y && tmp->next->j > WIN_Y))
-					plot_line(&v->d, tmp->i, tmp->j, tmp->next->i, tmp->next->j);
+					plot_line(&v->d, tmp, tmp->next);
 			}
 			if (tmp2)
 			{
@@ -59,7 +59,7 @@ void	draw(t_vars *v)
 					&& !(tmp->j < 0 && tmp2->j < 0)
 					&& !(tmp->i > WIN_X && tmp2->i > WIN_X)
 					&& !(tmp->j > WIN_Y && tmp2->j > WIN_Y))
-					plot_line(&v->d, tmp->i, tmp->j, tmp2->i, tmp2->j);
+					plot_line(&v->d, tmp, tmp2);
 				tmp2 = tmp2->next;
 			}
 			tmp = tmp->next;
@@ -159,7 +159,7 @@ int	main(int argc, char **argv)
 		v.d.img = mlx_new_image(v.mlx, WIN_X, WIN_Y);
 		v.d.addr = mlx_get_data_addr(v.d.img, &v.d.bpp, &v.d.length, &v.d.endian);
 		draw(&v);
-		mlx_hook(v.win, 2, 1L<<0, input_manager, &v);
+		mlx_hook(v.win,2, 1L<<0, input_manager, &v);
 		mlx_loop(v.mlx);
 		return (0);
 	}
