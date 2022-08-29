@@ -22,6 +22,7 @@ void	calc_point(t_vars *v, t_point *p)
 	rotation_y(p, v->y_angle);
 	p->i = (p->px * v->length * v->zoom) + v->x_off;
 	p->j = (p->py * v->length * v->zoom) + v->y_off;
+	printf("%d, %d (%f, %f)\n", p->i, p->j, p->x, p->y);
 }
 
 void	draw(t_vars *v)
@@ -78,7 +79,7 @@ void	init_param(t_vars *v)
 	v->zoom = 1;
 	v->length = 1870 / ((v->x_max + v->y_max) * cos(0.785398));
 	v->x_off = WIN_X / 2;
-	v->y_off = WIN_Y / 2;
+	v->y_off = /*WIN_Y / 2*/ 2147483100;
 	v->z_size = 0.2;
 }
 
