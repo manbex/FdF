@@ -24,7 +24,7 @@
 # include <unistd.h>
 # include <string.h>
 # include <fcntl.h>
-#include <math.h>
+# include <math.h>
 
 # include <stdio.h>
 
@@ -76,6 +76,7 @@ typedef struct s_vars
 	int		length;
 	double	z_size;
 	double	zoom;
+	int		exit_code;
 }	t_vars;
 
 typedef struct s_line

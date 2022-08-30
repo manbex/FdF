@@ -22,7 +22,6 @@ void	calc_point(t_vars *v, t_point *p)
 	rotation_y(p, v->y_angle);
 	p->i = (p->px * v->length * v->zoom) + v->x_off;
 	p->j = (p->py * v->length * v->zoom) + v->y_off;
-	printf("%d, %d (%f, %f)\n", p->i, p->j, p->x, p->y);
 }
 
 void	draw(t_vars *v)
@@ -79,22 +78,28 @@ void	init_param(t_vars *v)
 	v->zoom = 1;
 	v->length = 1870 / ((v->x_max + v->y_max) * cos(0.785398));
 	v->x_off = WIN_X / 2;
-	v->y_off = /*WIN_Y / 2*/ 2147483100;
+	v->y_off = WIN_Y / 2;
 	v->z_size = 0.2;
+	v->exit_code = 0;
+}
+
+int	exit_program(t_vars *v)
+{
+	if (v->d.img)
+		mlx_destroy_image(v->mlx, v->d.img);
+	if (v->win)
+		mlx_destroy_window(v->mlx, v->win);
+	mlx_loop_end(v->mlx);
+	mlx_destroy_display(v->mlx);
+	free(v->mlx);
+	ft_lstfree(v->p);
+	exit(v->exit_code);
 }
 
 int	input_manager(int keycode, t_vars *v)
 {
 	if (keycode == 65307)
-	{
-		mlx_destroy_image(v->mlx, v->d.img);
-		mlx_destroy_window(v->mlx, v->win);
-		mlx_loop_end(v->mlx);
-		mlx_destroy_display(v->mlx);
-		free(v->mlx);
-		ft_lstfree(v->p);
-		exit(0);
-	}
+		exit_program(v);
 	else if (keycode == 115 || keycode == 65364)
 		v->y_off -= TRANS;
 	else if (keycode == 119 || keycode == 65362)
@@ -136,6 +141,8 @@ int	input_manager(int keycode, t_vars *v)
 		init_param(v);
 	mlx_destroy_image(v->mlx, v->d.img);
 	v->d.img = mlx_new_image(v->mlx, WIN_X, WIN_Y);
+	if (!v->d.img)
+		return (write(2, "Error\n", 6), v->exit_code = 1, exit_program(v));
 	v->d.addr = mlx_get_data_addr(v->d.img, &v->d.bpp, &v->d.length, &v->d.endian);
 	draw(v);
 	return (0);
@@ -144,6 +151,7 @@ int	input_manager(int keycode, t_vars *v)
 int	main(int argc, char **argv)
 {
 	t_vars	v;
+
 	if (argc == 2 && ft_strlen(argv[1]) > 4
 		&& argv[1][ft_strlen(argv[1]) - 1] == 'f'
 		&& argv[1][ft_strlen(argv[1]) - 2] == 'd'
@@ -155,12 +163,18 @@ int	main(int argc, char **argv)
 		init_param(&v);
 		v.mlx = mlx_init();
 		if (!v.mlx)
-			return (write(2, "Error\n", 6), 1);
-		v.win = mlx_new_window(v.mlx, WIN_X, WIN_Y, "fdf");
+			return (ft_lstfree(v.p), write(2, "Error\n", 6), 1);
+		v.win = NULL;
 		v.d.img = mlx_new_image(v.mlx, WIN_X, WIN_Y);
+		if (!v.d.img)
+			return (write(2, "Error\n", 6), v.exit_code = 1, exit_program(&v));
+		v.win = mlx_new_window(v.mlx, WIN_X, WIN_Y, "fdf");
+		if (!v.win)
+			return (write(2, "Error\n", 6), v.exit_code = 1, exit_program(&v));
 		v.d.addr = mlx_get_data_addr(v.d.img, &v.d.bpp, &v.d.length, &v.d.endian);
 		draw(&v);
-		mlx_hook(v.win,2, 1L<<0, input_manager, &v);
+		mlx_hook(v.win, 2, 1L << 0, input_manager, &v);
+		mlx_hook(v.win, 33, 0, exit_program, &v);
 		mlx_loop(v.mlx);
 		return (0);
 	}
