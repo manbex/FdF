@@ -14,14 +14,15 @@
 
 void	calc_point(t_vars *v, t_point *p)
 {
+	p->show = 1;
 	p->px = p->x - ((double)v->x_max / 2);
 	p->py = p->y - ((double)v->y_max / 2);
 	p->pz = p->z * v->z_size;
 	rotation_z(p, v->z_angle);
 	rotation_x(p, v->x_angle);
 	rotation_y(p, v->y_angle);
-	p->i = (p->px * v->length * v->zoom) + v->x_off;
-	p->j = (p->py * v->length * v->zoom) + v->y_off;
+	p->i = (p->px * v->length) + v->x_off;
+	p->j = (p->py * v->length) + v->y_off;
 }
 
 void	draw(t_vars *v)
@@ -75,7 +76,6 @@ void	init_param(t_vars *v)
 	v->x_angle = 0.95;
 	v->y_angle = 0;
 	v->z_angle = 0.785398;
-	v->zoom = 1;
 	v->length = 1870 / ((v->x_max + v->y_max) * cos(0.785398));
 	v->x_off = WIN_X / 2;
 	v->y_off = WIN_Y / 2;
@@ -100,17 +100,17 @@ int	input_manager(int keycode, t_vars *v)
 {
 	if (keycode == 65307)
 		exit_program(v);
-	else if (keycode == 115 || keycode == 65364)
+	else if ((keycode == 115 || keycode == 65364) && v->y_off > INT_MIN + TRANS)
 		v->y_off -= TRANS;
-	else if (keycode == 119 || keycode == 65362)
+	else if ((keycode == 119 || keycode == 65362) && v->y_off < INT_MAX - TRANS)
 		v->y_off += TRANS;
-	else if (keycode == 100 || keycode == 65363)
+	else if ((keycode == 100 || keycode == 65363) && v->x_off > INT_MIN + TRANS)
 		v->x_off -= TRANS;
-	else if (keycode == 97 || keycode == 65361)
+	else if ((keycode == 97 || keycode == 65361) && v->x_off < INT_MAX - TRANS)
 		v->x_off += TRANS;
 	else if (keycode == 114)
 		v->x_angle -= ANGLE;
-	else if (keycode == 116)
+	else if (keycode == 1166)
 		v->x_angle += ANGLE;
 	else if (keycode == 102)
 		v->y_angle -= ANGLE;
@@ -120,22 +120,27 @@ int	input_manager(int keycode, t_vars *v)
 		v->z_angle -= ANGLE;
 	else if (keycode == 98)
 		v->z_angle += ANGLE;
-	else if (keycode == 117)
+	else if (keycode == 117 && v->z_size > -5)
 		v->z_size -= 0.1;
-	else if (keycode == 105)
+	else if (keycode == 105 && v->z_size < 5)
 		v->z_size += 0.1;
-	else if (keycode == 122 || keycode == 65453)
+	else if ((keycode == 122 || keycode == 65453) && v->length > 1)
 	{
-		v->zoom /= ZOOM;
-		v->x_off = (WIN_X / 2) - ((960 - v->x_off) / ZOOM);
-		v->y_off = (WIN_Y / 2) - ((540 - v->y_off) / ZOOM);
+		v->length /= ZOOM;
+		v->x_off = (WIN_X / 2) - (((WIN_X / 2) - v->x_off) / ZOOM);
+		v->y_off = (WIN_Y / 2) - (((WIN_Y / 2) - v->y_off) / ZOOM);
 	}
-	else if (keycode == 120 || keycode == 65451)
+	else if (((keycode == 120 || keycode == 65451) && v->length < 10000)
+			&& v->x_off < ((INT_MAX - (WIN_X / 2)) / ZOOM) + (WIN_X / 2)
+				&& v->x_off < ((INT_MAX + ((WIN_X / 2)
+				* (1 - ZOOM))) / ZOOM) - (WIN_X / 2) && v->y_off
+				< ((INT_MAX - (WIN_Y / 2)) / ZOOM) + (WIN_Y / 2)
+				&& v->y_off < ((INT_MAX + ((WIN_Y / 2)
+				* (1 - ZOOM))) / ZOOM) - (WIN_Y / 2))
 	{
-		v->zoom *= ZOOM;
-		v->x_off = 960 - ((960 - v->x_off) * ZOOM);
-		v->y_off = 540 - ((540 - v->y_off) * ZOOM);
-		
+		v->length *= ZOOM;
+		v->x_off = (WIN_X / 2) - (((WIN_X / 2) - v->x_off) * ZOOM);
+		v->y_off = (WIN_Y / 2) - (((WIN_Y / 2) - v->y_off) * ZOOM);
 	}
 	else if (keycode == 65289)
 		init_param(v);
@@ -143,7 +148,8 @@ int	input_manager(int keycode, t_vars *v)
 	v->d.img = mlx_new_image(v->mlx, WIN_X, WIN_Y);
 	if (!v->d.img)
 		return (write(2, "Error\n", 6), v->exit_code = 1, exit_program(v));
-	v->d.addr = mlx_get_data_addr(v->d.img, &v->d.bpp, &v->d.length, &v->d.endian);
+	v->d.addr = mlx_get_data_addr(v->d.img, &v->d.bpp,
+			&v->d.length, &v->d.endian);
 	draw(v);
 	return (0);
 }
@@ -171,7 +177,8 @@ int	main(int argc, char **argv)
 		v.win = mlx_new_window(v.mlx, WIN_X, WIN_Y, "fdf");
 		if (!v.win)
 			return (write(2, "Error\n", 6), v.exit_code = 1, exit_program(&v));
-		v.d.addr = mlx_get_data_addr(v.d.img, &v.d.bpp, &v.d.length, &v.d.endian);
+		v.d.addr = mlx_get_data_addr(v.d.img, &v.d.bpp,
+				&v.d.length, &v.d.endian);
 		draw(&v);
 		mlx_hook(v.win, 2, 1L << 0, input_manager, &v);
 		mlx_hook(v.win, 33, 0, exit_program, &v);

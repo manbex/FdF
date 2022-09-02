@@ -25,6 +25,7 @@
 # include <string.h>
 # include <fcntl.h>
 # include <math.h>
+# include <limits.h>
 
 # include <stdio.h>
 
@@ -73,9 +74,8 @@ typedef struct s_vars
 	int		y_off;
 	int		x_max;
 	int		y_max;
-	int		length;
+	double		length;
 	double	z_size;
-	double	zoom;
 	int		exit_code;
 }	t_vars;
 
