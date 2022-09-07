@@ -6,7 +6,7 @@
 /*   By: mbenicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 12:02:46 by mbenicho          #+#    #+#             */
-/*   Updated: 2022/09/07 12:02:48 by mbenicho         ###   ########.fr       */
+/*   Updated: 2022/09/07 15:54:16 by mbenicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	draw2(t_vars *v, t_point **tmp, t_point **tmp2)
 			&& !((*tmp)->i > WIN_X && (*tmp2)->i > WIN_X)
 			&& !((*tmp)->j > WIN_Y && (*tmp2)->j > WIN_Y))
 			plot_line(&v->d, *tmp, *tmp2);
-			*tmp2 = (*tmp2)->next;
+		*tmp2 = (*tmp2)->next;
 	}
 	*tmp = (*tmp)->next;
 }

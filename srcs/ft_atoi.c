@@ -6,7 +6,7 @@
 /*   By: mbenicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 10:22:20 by mbenicho          #+#    #+#             */
-/*   Updated: 2022/09/07 10:22:22 by mbenicho         ###   ########.fr       */
+/*   Updated: 2022/09/07 15:53:35 by mbenicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ static int	ft_convert(char c)
 
 int	ft_atoi_hex(char c1, char c2)
 {
-	int	i;
 	int	n;
 
 	n = 0;
