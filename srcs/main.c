@@ -6,7 +6,7 @@
 /*   By: mbenicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 18:55:51 by mbenicho          #+#    #+#             */
-/*   Updated: 2022/07/12 18:55:54 by mbenicho         ###   ########.fr       */
+/*   Updated: 2022/09/07 10:11:01 by mbenicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,9 @@ void	draw(t_vars *v)
 {
 	t_list	*lst;
 	t_point	*tmp;
-	t_point *tmp2;
-	
+	t_point	*tmp2;
+
 	lst = v->p;
-	
 	while (lst)
 	{
 		tmp = lst->p;
@@ -81,6 +80,33 @@ void	init_param(t_vars *v)
 	v->y_off = WIN_Y / 2;
 	v->z_size = 0.2;
 	v->exit_code = 0;
+	v->max = v->x_max;
+}
+
+void	dimetric(t_vars *v)
+{
+	v->x_angle = 1.2;
+	v->y_angle = 0;
+	v->z_angle = 0.785398;
+	v->length = 1870 / ((v->x_max + v->y_max) * cos(0.785398));
+	v->x_off = WIN_X / 2;
+	v->y_off = WIN_Y / 2;
+	v->z_size = 0.2;
+	v->exit_code = 0;
+	v->max = v->x_max;
+}
+
+void	trimetric(t_vars *v)
+{
+	v->x_angle = 1.2;
+	v->y_angle = 0;
+	v->z_angle = 0.6;
+	v->length = 1870 / ((v->x_max + v->y_max) * cos(0.785398));
+	v->x_off = WIN_X / 2;
+	v->y_off = WIN_Y / 2;
+	v->z_size = 0.2;
+	v->exit_code = 0;
+	v->max = v->x_max;
 }
 
 int	exit_program(t_vars *v)
@@ -96,54 +122,8 @@ int	exit_program(t_vars *v)
 	exit(v->exit_code);
 }
 
-int	input_manager(int keycode, t_vars *v)
+int	input_manager3(t_vars *v)
 {
-	if (keycode == 65307)
-		exit_program(v);
-	else if ((keycode == 115 || keycode == 65364) && v->y_off > INT_MIN + TRANS)
-		v->y_off -= TRANS;
-	else if ((keycode == 119 || keycode == 65362) && v->y_off < INT_MAX - TRANS)
-		v->y_off += TRANS;
-	else if ((keycode == 100 || keycode == 65363) && v->x_off > INT_MIN + TRANS)
-		v->x_off -= TRANS;
-	else if ((keycode == 97 || keycode == 65361) && v->x_off < INT_MAX - TRANS)
-		v->x_off += TRANS;
-	else if (keycode == 114)
-		v->x_angle -= ANGLE;
-	else if (keycode == 1166)
-		v->x_angle += ANGLE;
-	else if (keycode == 102)
-		v->y_angle -= ANGLE;
-	else if (keycode == 103)
-		v->y_angle += ANGLE;
-	else if (keycode == 118)
-		v->z_angle -= ANGLE;
-	else if (keycode == 98)
-		v->z_angle += ANGLE;
-	else if (keycode == 117 && v->z_size > -5)
-		v->z_size -= 0.1;
-	else if (keycode == 105 && v->z_size < 5)
-		v->z_size += 0.1;
-	else if ((keycode == 122 || keycode == 65453) && v->length > 1)
-	{
-		v->length /= ZOOM;
-		v->x_off = (WIN_X / 2) - (((WIN_X / 2) - v->x_off) / ZOOM);
-		v->y_off = (WIN_Y / 2) - (((WIN_Y / 2) - v->y_off) / ZOOM);
-	}
-	else if (((keycode == 120 || keycode == 65451) && v->length < 10000)
-			&& v->x_off < ((INT_MAX - (WIN_X / 2)) / ZOOM) + (WIN_X / 2)
-				&& v->x_off < ((INT_MAX + ((WIN_X / 2)
-				* (1 - ZOOM))) / ZOOM) - (WIN_X / 2) && v->y_off
-				< ((INT_MAX - (WIN_Y / 2)) / ZOOM) + (WIN_Y / 2)
-				&& v->y_off < ((INT_MAX + ((WIN_Y / 2)
-				* (1 - ZOOM))) / ZOOM) - (WIN_Y / 2))
-	{
-		v->length *= ZOOM;
-		v->x_off = (WIN_X / 2) - (((WIN_X / 2) - v->x_off) * ZOOM);
-		v->y_off = (WIN_Y / 2) - (((WIN_Y / 2) - v->y_off) * ZOOM);
-	}
-	else if (keycode == 65289)
-		init_param(v);
 	mlx_destroy_image(v->mlx, v->d.img);
 	v->d.img = mlx_new_image(v->mlx, WIN_X, WIN_Y);
 	if (!v->d.img)
@@ -151,6 +131,86 @@ int	input_manager(int keycode, t_vars *v)
 	v->d.addr = mlx_get_data_addr(v->d.img, &v->d.bpp,
 			&v->d.length, &v->d.endian);
 	draw(v);
+	return (0);
+}
+
+int	input_manager2(int keycode, t_vars *v)
+{
+	if (keycode == 105 && v->z_size < 2)
+		v->z_size += 0.1;
+	else if ((keycode == 122 || keycode == 65453) && v->length > 1)
+	{
+		v->length /= ZOOM;
+		v->x_off = (WIN_X / 2) - (((WIN_X / 2) - v->x_off) / ZOOM);
+		v->y_off = (WIN_Y / 2) - (((WIN_Y / 2) - v->y_off) / ZOOM);
+	}
+	else if ((keycode == 120 || keycode == 65451) && v->length < 2000
+			&& v->x_off < 1000000000 && v->x_off > -1000000000
+			&& v->y_off < 1000000000 && v->y_off > -1000000000)
+	{
+		v->length *= ZOOM;
+		v->x_off = (WIN_X / 2) - (((WIN_X / 2) - v->x_off) * ZOOM);
+		v->y_off = (WIN_Y / 2) - (((WIN_Y / 2) - v->y_off) * ZOOM);
+	}
+	else if (keycode == 49)
+		init_param(v);
+	else if (keycode == 50)
+		dimetric(v);
+	else if (keycode == 51)
+		trimetric(v);
+	input_manager3(v);
+	return (0);
+}
+
+int	input_manager(int keycode, t_vars *v)
+{
+	if (keycode == 65307)
+		exit_program(v);
+	else if ((keycode == 115 || keycode == 65364) && v->y_off > -1000000000)
+		v->y_off -= TRANS;
+	else if ((keycode == 119 || keycode == 65362) && v->y_off < 1000000000)
+		v->y_off += TRANS;
+	else if ((keycode == 100 || keycode == 65363) && v->x_off > -1000000000)
+		v->x_off -= TRANS;
+	else if ((keycode == 97 || keycode == 65361) && v->x_off < 1000000000)
+		v->x_off += TRANS;
+	else if (keycode == 114 && v->x_angle > -1000000000)
+		v->x_angle -= ANGLE;
+	else if (keycode == 116 && v->x_angle < 1000000000)
+		v->x_angle += ANGLE;
+	else if (keycode == 102 && v->y_angle > -1000000000)
+		v->y_angle -= ANGLE;
+	else if (keycode == 103 && v->y_angle < 1000000000)
+		v->y_angle += ANGLE;
+	else if (keycode == 118 && v->z_angle > -1000000000)
+		v->z_angle -= ANGLE;
+	else if (keycode == 98 && v->z_angle < 1000000000)
+		v->z_angle += ANGLE;
+	else if (keycode == 117 && v->z_size > -2)
+		v->z_size -= 0.1;
+	input_manager2(keycode, v);
+	return (0);
+}
+
+int	fdf(t_vars *v)
+{
+	init_param(v);
+	v->mlx = mlx_init();
+	if (!v->mlx)
+		return (ft_lstfree(v->p), write(2, "Error\n", 6), 1);
+	v->win = NULL;
+	v->d.img = mlx_new_image(v->mlx, WIN_X, WIN_Y);
+	if (!v->d.img)
+		return (write(2, "Error\n", 6), v->exit_code = 1, exit_program(v));
+	v->win = mlx_new_window(v->mlx, WIN_X, WIN_Y, "fdf");
+	if (!v->win)
+		return (write(2, "Error\n", 6), v->exit_code = 1, exit_program(v));
+	v->d.addr = mlx_get_data_addr(v->d.img, &v->d.bpp,
+			&v->d.length, &v->d.endian);
+	draw(v);
+	mlx_hook(v->win, 2, 1L << 0, input_manager, v);
+	mlx_hook(v->win, 33, 0, exit_program, v);
+	mlx_loop(v->mlx);
 	return (0);
 }
 
@@ -166,24 +226,7 @@ int	main(int argc, char **argv)
 	{
 		if (init(argv[1], &v))
 			return (write(2, "Error\n", 6), 1);
-		init_param(&v);
-		v.mlx = mlx_init();
-		if (!v.mlx)
-			return (ft_lstfree(v.p), write(2, "Error\n", 6), 1);
-		v.win = NULL;
-		v.d.img = mlx_new_image(v.mlx, WIN_X, WIN_Y);
-		if (!v.d.img)
-			return (write(2, "Error\n", 6), v.exit_code = 1, exit_program(&v));
-		v.win = mlx_new_window(v.mlx, WIN_X, WIN_Y, "fdf");
-		if (!v.win)
-			return (write(2, "Error\n", 6), v.exit_code = 1, exit_program(&v));
-		v.d.addr = mlx_get_data_addr(v.d.img, &v.d.bpp,
-				&v.d.length, &v.d.endian);
-		draw(&v);
-		mlx_hook(v.win, 2, 1L << 0, input_manager, &v);
-		mlx_hook(v.win, 33, 0, exit_program, &v);
-		mlx_loop(v.mlx);
-		return (0);
+		return (fdf(&v));
 	}
 	return (write(2, "Error\n", 6), 1);
 }
