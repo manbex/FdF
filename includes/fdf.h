@@ -6,7 +6,7 @@
 /*   By: mbenicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 15:23:52 by mbenicho          #+#    #+#             */
-/*   Updated: 2022/09/07 10:11:27 by mbenicho         ###   ########.fr       */
+/*   Updated: 2022/09/07 12:00:15 by mbenicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,5 +112,11 @@ void	my_mlx_pixel_put(t_data *d, int x, int y, int color);
 void	rotation_x(t_point *p, double a);
 void	rotation_y(t_point *p, double a);
 void	rotation_z(t_point *p, double a);
+void	draw(t_vars *v);
+int	input_manager(int keycode, t_vars *v);
+int	exit_program(t_vars *v);
+void	init_param(t_vars *v);
+void	dimetric(t_vars *v);
+void	trimetric(t_vars *v);
 
 #endif

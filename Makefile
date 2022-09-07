@@ -3,7 +3,8 @@ NAME = fdf
 SRC_DIR=srcs/
 
 SRC = main.c init.c utils.c get_next_line.c get_next_line_utils.c\
-	ft_split.c ft_atoi.c line.c rotation.c utils2.c parse.c
+	ft_split.c ft_atoi.c line.c rotation.c utils2.c parse.c\
+	input.c draw.c
 TEST = test.c
 
 OBJ = $(addprefix $(SRC_DIR), $(SRC:.c=.o))
@@ -37,5 +38,3 @@ fclean: clean
 re: fclean $(NAME)
 
 .PHONY: all bonus clean fclean re
-
-.SILENT:
