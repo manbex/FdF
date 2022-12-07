@@ -12,26 +12,31 @@
 
 #include "fdf.h"
 
-int	ft_atoi(const char *nptr)
+int	ft_superatoi(char *nptr, int *res)
 {
-	int	i;
-	int	n;
+	long	n;
 	int	sign;
+	int	nb;
 
-	i = 0;
 	n = 0;
 	sign = 1;
-	if (nptr[i] == '-')
+	if (*nptr == '-')
 	{
-		i++;
 		sign = -1;
+		nptr++;
 	}
-	while (nptr[i] >= '0' && nptr[i] <= '9')
+	while (*nptr >= '0' && *nptr <= '9')
 	{
-		n = (n * 10) + nptr[i] - '0';
-		i++;
+		nb = (n * 10);
+		if (nb / 10 != n)
+			return (1);
+		n = (long)nb + *nptr - '0';
+		if (n * sign > INT_MAX || n * sign < INT_MIN)
+			return (1);
+		nptr++;
 	}
-	return (n * sign);
+	*res = n * sign;
+	return (0);
 }
 
 static int	ft_convert(char c)

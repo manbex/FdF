@@ -103,10 +103,9 @@ int	init(char *file, t_vars *v)
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 		return (1);
-	v->p = NULL;
 	v->x_max = 0;
 	v->y_max = 0;
 	if (read_file(fd, v))
-		return (1);
-	return (0);
+		return (close(fd), 1);
+	return (close(fd), 0);
 }

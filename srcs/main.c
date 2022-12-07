@@ -17,7 +17,7 @@ void	init_param(t_vars *v)
 	v->x_angle = 0.95;
 	v->y_angle = 0;
 	v->z_angle = 0.785398;
-	v->length = 1870 / ((v->x_max + v->y_max) * cos(0.785398));
+	v->length = (WIN_X - 50) / ((v->x_max + v->y_max) * cos(0.785398));
 	v->x_off = WIN_X / 2;
 	v->y_off = WIN_Y / 2;
 	v->z_size = 0.2;
@@ -29,7 +29,7 @@ void	dimetric(t_vars *v)
 	v->x_angle = 1.2;
 	v->y_angle = 0;
 	v->z_angle = 0.785398;
-	v->length = 1870 / ((v->x_max + v->y_max) * cos(0.785398));
+	v->length = (WIN_X - 50) / ((v->x_max + v->y_max) * cos(0.785398));
 	v->x_off = WIN_X / 2;
 	v->y_off = WIN_Y / 2;
 	v->z_size = 0.2;
@@ -41,7 +41,7 @@ void	trimetric(t_vars *v)
 	v->x_angle = 0.95;
 	v->y_angle = 0;
 	v->z_angle = 0.6;
-	v->length = 1870 / ((v->x_max + v->y_max) * cos(0.785398));
+	v->length = (WIN_X - 50) / ((v->x_max + v->y_max) * cos(0.785398));
 	v->x_off = WIN_X / 2;
 	v->y_off = WIN_Y / 2;
 	v->z_size = 0.2;
@@ -54,7 +54,6 @@ int	fdf(t_vars *v)
 	v->mlx = mlx_init();
 	if (!v->mlx)
 		return (ft_lstfree(v->p), write(2, "Error\n", 6), 1);
-	v->win = NULL;
 	v->d.img = mlx_new_image(v->mlx, WIN_X, WIN_Y);
 	if (!v->d.img)
 		return (write(2, "Error\n", 6), v->exit_code = 1, exit_program(v));

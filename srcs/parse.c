@@ -44,8 +44,11 @@ static int	get_color(t_point *new, char *str)
 int	parse_line(t_point *new, char *str)
 {
 	int	i;
+	int	n;
 
-	new->z = ft_atoi(str);
+	if (ft_superatoi(str, &n))
+		return (1);
+	new->z = n;
 	while ((*str >= '0' && *str <= '9') || *str == '-')
 		str++;
 	if (!*str)
