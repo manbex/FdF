@@ -22,12 +22,10 @@ bonus: all
 
 clean:
 	$(RM) $(OBJ)
-	$(RM) $(TEST_OBJ)
 
 fclean: clean
 	make clean -C ./mlx
 	$(RM) $(NAME)
-	$(RM) test
 
 re: fclean $(NAME)
 
