@@ -14,7 +14,6 @@
 
 void	calc_point(t_vars *v, t_point *p)
 {
-	p->show = 1;
 	p->px = p->x - ((double)v->x_max / 2);
 	p->py = p->y - ((double)v->y_max / 2);
 	p->pz = p->z * v->z_size;
@@ -51,6 +50,26 @@ void	draw2(t_vars *v, t_point **tmp, t_point **tmp2)
 	*tmp = (*tmp)->next;
 }
 
+void	show_instructions(t_vars *v)
+{
+	mlx_string_put(v->mlx, v->win, 10, 30, 0xFFFFFF, "Hide controls: H");
+	mlx_string_put(v->mlx, v->win, 20, 45, 0xFFFFFF,
+		"Translate: W, A, S, D or arrow keys");
+	mlx_string_put(v->mlx, v->win, 20, 60, 0xFFFFFF, "Rotate x: R, T");
+	mlx_string_put(v->mlx, v->win, 20, 75, 0xFFFFFF, "Rotate y: F, G");
+	mlx_string_put(v->mlx, v->win, 20, 90, 0xFFFFFF, "Rotate z: C, V");
+	mlx_string_put(v->mlx, v->win, 20, 105, 0xFFFFFF, "Zoom in: X or +");
+	mlx_string_put(v->mlx, v->win, 20, 120, 0xFFFFFF, "Zoom out: Z or -");
+	mlx_string_put(v->mlx, v->win, 20, 135, 0xFFFFFF, "Increase size: I");
+	mlx_string_put(v->mlx, v->win, 20, 150, 0xFFFFFF, "Decrease size:: U");
+	mlx_string_put(v->mlx, v->win, 20, 165, 0xFFFFFF,
+		"Isometric projection: 1");
+	mlx_string_put(v->mlx, v->win, 20, 180, 0xFFFFFF, "Dimetric projection: 2");
+	mlx_string_put(v->mlx, v->win, 20, 195, 0xFFFFFF,
+		"Trimetric projection: 3");
+	mlx_string_put(v->mlx, v->win, 20, 210, 0xFFFFFF, "Quit: ESC");
+}
+
 void	draw(t_vars *v)
 {
 	t_list	*lst;
@@ -70,5 +89,8 @@ void	draw(t_vars *v)
 		lst = lst->next;
 	}
 	mlx_put_image_to_window(v->mlx, v->win, v->d.img, 0, 0);
-	mlx_string_put(v->mlx, v->win, 20, 30, 0xFFFFFF, "Coucou c'est FdF !");
+	if (v->show == 1)
+		show_instructions(v);
+	else
+		mlx_string_put(v->mlx, v->win, 10, 30, 0xFFFFFF, "Show controls: H");
 }

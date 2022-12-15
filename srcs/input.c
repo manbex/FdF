@@ -25,8 +25,12 @@ int	exit_program(t_vars *v)
 	exit(v->exit_code);
 }
 
-int	input_manager3(t_vars *v)
+int	input_manager3(int keycode, t_vars *v)
 {
+	if (keycode == 104 && v->show == 0)
+		v->show = 1;
+	else if (keycode == 104 && v->show == 1)
+		v->show = 0;
 	mlx_destroy_image(v->mlx, v->d.img);
 	v->d.img = mlx_new_image(v->mlx, WIN_X, WIN_Y);
 	if (!v->d.img)
@@ -46,14 +50,14 @@ int	input_manager2(int keycode, t_vars *v)
 	else if ((keycode == 122 || keycode == 65453) && v->length > 1)
 	{
 		v->length /= ZOOM;
-		v->x_off = (WIN_X / 2) - (((WIN_X / 2) - v->x_off) / ZOOM);
-		v->y_off = (WIN_Y / 2) - (((WIN_Y / 2) - v->y_off) / ZOOM);
+		v->x_off = (WIN_X / 2) + ((v->x_off - (WIN_X / 2)) / ZOOM);
+		v->y_off = (WIN_Y / 2) + ((v->y_off - (WIN_Y / 2)) / ZOOM);
 	}
 	else if ((keycode == 120 || keycode == 65451) && v->length < 2000)
 	{
 		v->length *= ZOOM;
-		v->x_off = (WIN_X / 2) - (((WIN_X / 2) - v->x_off) * ZOOM);
-		v->y_off = (WIN_Y / 2) - (((WIN_Y / 2) - v->y_off) * ZOOM);
+		v->x_off = (WIN_X / 2) + ((v->x_off - (WIN_X / 2)) * ZOOM);
+		v->y_off = (WIN_Y / 2) + ((v->y_off - (WIN_Y / 2)) * ZOOM);
 	}
 	else if (keycode == 49)
 		init_param(v);
@@ -61,7 +65,7 @@ int	input_manager2(int keycode, t_vars *v)
 		dimetric(v);
 	else if (keycode == 51)
 		trimetric(v);
-	input_manager3(v);
+	input_manager3(keycode, v);
 	return (0);
 }
 
@@ -69,25 +73,25 @@ int	input_manager(int keycode, t_vars *v)
 {
 	if (keycode == 65307)
 		exit_program(v);
-	else if (keycode == 115 || keycode == 65364)
+	else if ((keycode == 115 || keycode == 65364) && v->y_off > -100000)
 		v->y_off -= TRANS;
-	else if (keycode == 119 || keycode == 65362)
+	else if ((keycode == 119 || keycode == 65362) && v->y_off < 100000)
 		v->y_off += TRANS;
-	else if (keycode == 100 || keycode == 65363)
+	else if ((keycode == 100 || keycode == 65363) && v->x_off > -100000)
 		v->x_off -= TRANS;
-	else if (keycode == 97 || keycode == 65361)
+	else if ((keycode == 97 || keycode == 65361) && v->x_off < 100000)
 		v->x_off += TRANS;
-	else if (keycode == 114)
+	else if (keycode == 102 && v->x_angle > -100000)
 		v->x_angle -= ANGLE;
-	else if (keycode == 116)
+	else if (keycode == 103 && v->x_angle < 100000)
 		v->x_angle += ANGLE;
-	else if (keycode == 102)
+	else if (keycode == 114 && v->y_angle > -100000)
 		v->y_angle -= ANGLE;
-	else if (keycode == 103)
+	else if (keycode == 116 && v->y_angle < 100000)
 		v->y_angle += ANGLE;
-	else if (keycode == 118)
+	else if (keycode == 118 && v->z_angle > -100000)
 		v->z_angle -= ANGLE;
-	else if (keycode == 98)
+	else if (keycode == 98 && v->z_angle < 100000)
 		v->z_angle += ANGLE;
 	input_manager2(keycode, v);
 	return (0);

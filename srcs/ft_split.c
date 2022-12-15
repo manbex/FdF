@@ -18,9 +18,9 @@ static int	ft_size(char const *s, char c)
 	char	last;
 	int		size;
 
-	if (s[0] == 0)
+	if (!s[0])
 		return (0);
-	if (c == 0)
+	if (!c)
 		return (1);
 	i = 0;
 	last = c;
@@ -76,7 +76,7 @@ char	**ft_split(char const *s, char c)
 
 	size = ft_size(s, c);
 	tab = malloc((size + 1) * sizeof(char *));
-	if (tab == 0)
+	if (!tab)
 		return (0);
 	tab[size] = 0;
 	i = 0;
@@ -86,7 +86,7 @@ char	**ft_split(char const *s, char c)
 		while (s[i] == c)
 			i++;
 		tab[j] = malloc((ft_strlen_c(s + i, c) + 1) * sizeof(char));
-		if (tab == 0)
+		if (!tab[j])
 			return (free_tab(tab, j));
 		ft_strncpy(tab[j], s + i, ft_strlen_c(s + i, c));
 		i += ft_strlen_c(s + i, c);

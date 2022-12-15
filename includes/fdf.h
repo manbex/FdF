@@ -27,8 +27,6 @@
 # include <math.h>
 # include <limits.h>
 
-# include <stdio.h>
-
 typedef struct s_data
 {
 	void	*img;
@@ -51,7 +49,6 @@ typedef struct s_point
 	int				r;
 	int				g;
 	int				b;
-	int				show;
 	struct s_point *next;
 }	t_point;
 
@@ -70,13 +67,14 @@ typedef struct s_vars
 	double	x_angle;
 	double	y_angle;
 	double	z_angle;
-	int		x_off;
-	int		y_off;
+	double	x_off;
+	double	y_off;
 	int		x_max;
 	int		y_max;
 	double		length;
 	double	z_size;
 	int		exit_code;
+	int		show;
 }	t_vars;
 
 typedef struct s_line
