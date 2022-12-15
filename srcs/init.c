@@ -63,10 +63,10 @@ static int	init_list(t_vars *v, char *line, int *x, int y)
 		return (1);
 	new = malloc(sizeof(*new));
 	if (!new)
-		return (ft_free_tab(tab), ft_lstfree(v->p), 1);
+		return (ft_free_tab(tab), 1);
 	new->p = NULL;
 	if (check_size(x, tab) || init_points(v, &(new->p), y, tab))
-		return (ft_free_tab(tab), ft_lstfree(v->p), free(new), 1);
+		return (ft_free_tab(tab), free(new), 1);
 	ft_free_tab(tab);
 	new->next = NULL;
 	ft_lstadd_back1(&(v->p), new);
@@ -76,21 +76,17 @@ static int	init_list(t_vars *v, char *line, int *x, int y)
 static int	read_file(int fd, t_vars *v)
 {
 	char	*line;
-	int		readed;
 	int		x;
 	int		y;
 
-	readed = 1;
 	x = 0;
 	y = 0;
-	while (readed)
+	if (get_next_line(fd, &line) || (line && init_list(v, line, &x, y)))
+		return (ft_lstfree(v->p), 1);
+	while (line)
 	{
-		readed = get_next_line(fd, &line);
-		if (readed == -1 || (readed && !line))
-			return (ft_free(line), ft_lstfree(v->p), 1);
-		else if (readed)
-			if (init_list(v, line, &x, y))
-				return (1);
+		if (get_next_line(fd, &line) || (line && init_list(v, line, &x, y)))
+			return (ft_lstfree(v->p), 1);
 		y++;
 	}
 	return (0);
@@ -103,6 +99,7 @@ int	init(char *file, t_vars *v)
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 		return (1);
+	v->p = NULL;
 	v->x_max = 0;
 	v->y_max = 0;
 	if (read_file(fd, v))

@@ -12,6 +12,35 @@
 
 #include "fdf.h"
 
+char	*ft_customjoin(char *s1, char *s2)
+{
+	char	*str;
+	size_t	size;
+	int		i;
+
+	i = 0;
+	if (!s1)
+	{
+		s1 = malloc(sizeof(char));
+		if (!s1)
+			return (NULL);
+		*s1 = 0;
+	}
+	size = ft_strlen(s1) + ft_strlen(s2);
+	str = malloc((size + 1) * sizeof(char));
+	if (!str)
+		return (free(s1), NULL);
+	while (s1[i])
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	while (*s2)
+		str[i++] = *s2++;
+	str[i] = 0;
+	return (free(s1), str);
+}
+
 int	ft_have_newline(char *str)
 {
 	size_t	i;
@@ -27,7 +56,7 @@ int	ft_have_newline(char *str)
 	return (0);
 }
 
-char	*get_line(char *stash)
+int	get_line(char *stash, char **line)
 {
 	char	*str;
 	int		size;
@@ -36,24 +65,24 @@ char	*get_line(char *stash)
 	i = 0;
 	size = 0;
 	if (!stash)
-		return (NULL);
+		return (*line = NULL, 0);
 	while (stash[size] && stash[size] != '\n')
 		size++;
 	str = malloc((size + 1) * sizeof(char));
 	if (!str)
-		return (ft_free(stash));
+		return (free(stash), *line = NULL, 1);
 	while (i < size)
 	{
 		str[i] = stash[i];
 		i++;
 	}
 	str[i] = 0;
-	return (str);
+	return (*line = str, 0);
 }
 
-char	*get_stash(char *stash)
+int	get_stash(char **stash, char **str)
 {
-	char	*str;
+	char	*new;
 	size_t	i;
 	size_t	j;
 	size_t	size;
@@ -61,49 +90,50 @@ char	*get_stash(char *stash)
 	i = 0;
 	j = 0;
 	size = 0;
-	if (!stash)
-		return (NULL);
-	while (stash[i] && stash[i] != '\n')
+	if (!*stash)
+		return (0);
+	while ((*stash)[i] && (*stash)[i] != '\n')
 		i++;
-	if (stash[i] == '\n')
+	if ((*stash)[i] == '\n')
 		i++;
-	while (stash[i + size])
+	while ((*stash)[i + size])
 		size++;
 	if (!size)
-		return (ft_free(stash));
-	str = malloc((size + 1) * sizeof(char));
-	if (!str)
-		return (ft_free(stash));
-	while (stash[i])
-		str[j++] = stash[i++];
-	str[j] = 0;
-	return (free(stash), str);
+		return (free(*stash), *stash = NULL, 0);
+	new = malloc((size + 1) * sizeof(char));
+	if (!new)
+		return (free(*stash), free(*str), 1);
+	while ((*stash)[i])
+		new[j++] = (*stash)[i++];
+	new[j] = 0;
+	return (free(*stash), *stash = new, 0);
 }
 
 int	get_next_line(int fd, char **str)
 {
 	char		*buf;
-	static char	*stash;
+	static char	*stash[1024];
 	int			readed;
+	char		*line;
 
 	buf = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buf)
-		return (ft_free(stash), -1);
+		return (free(stash[fd]), *str = NULL, 1);
 	readed = 1;
-	while (!ft_have_newline(stash) && readed)
+	while (!ft_have_newline(stash[fd]) && readed)
 	{
 		readed = read(fd, buf, BUFFER_SIZE);
 		if (readed < 0)
-			return (free(buf), ft_free(stash), -1);
+			return (free(buf), free(stash[fd]), *str = NULL, 1);
 		buf[readed] = 0;
 		if (readed)
 		{
-			stash = ft_strjoin(stash, buf);
-			if (!stash)
-				return (ft_free(buf), -1);
+			stash[fd] = ft_customjoin(stash[fd], buf);
+			if (!stash[fd])
+				return (free(buf), *str = NULL, 1);
 		}
 	}
-	*str = get_line(stash);
-	stash = get_stash(stash);
-	return (free(buf), readed);
+	if (get_line(stash[fd], &line) || get_stash(&stash[fd], &line))
+		return (free(buf), *str = NULL, 1);
+	return (free(buf), *str = line, 0);
 }

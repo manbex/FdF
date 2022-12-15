@@ -15,8 +15,8 @@
 int	ft_superatoi(char *nptr, int *res)
 {
 	long	n;
-	int	sign;
-	int	nb;
+	int		sign;
+	int		nb;
 
 	n = 0;
 	sign = 1;
