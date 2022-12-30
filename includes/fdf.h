@@ -6,7 +6,7 @@
 /*   By: mbenicho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/12 15:23:52 by mbenicho          #+#    #+#             */
-/*   Updated: 2022/09/07 12:00:15 by mbenicho         ###   ########.fr       */
+/*   Updated: 2022/12/30 16:30:18 by mbenicho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,13 @@ typedef struct s_point
 	int				r;
 	int				g;
 	int				b;
-	struct s_point *next;
+	struct s_point	*next;
 }	t_point;
 
 typedef struct s_list
 {
-	t_point *p;
-	struct s_list *next;
+	t_point			*p;
+	struct s_list	*next;
 }	t_list;
 
 typedef struct s_vars
@@ -71,7 +71,7 @@ typedef struct s_vars
 	double	y_off;
 	int		x_max;
 	int		y_max;
-	double		length;
+	double	length;
 	double	z_size;
 	int		exit_code;
 	int		show;
@@ -99,7 +99,7 @@ void	ft_lstadd_back1(t_list **lst, t_list *new);
 char	*ft_free(char *str);
 void	ft_free_tab(char **tab);
 char	**ft_split(char const *s, char c);
-int 	ft_superatoi(char *nptr, int *res);
+int		ft_superatoi(char *nptr, int *res);
 int		ft_atoi_hex(char c1, char c2);
 char	*ft_strjoin(char *s1, char *s2);
 int		get_next_line(int fd, char **str);
